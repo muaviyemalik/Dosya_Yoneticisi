@@ -4,6 +4,7 @@ import 'screens/dosya_listesi_ekrani.dart';
 import 'widgets/kategori_karti.dart';
 import 'services/file_service.dart';
 import 'services/permission_service.dart';
+import 'widgets/depolama_grafigi.dart';
 
 void main() 
 {
@@ -111,72 +112,112 @@ class _AnaEkranState extends State<AnaEkran>
                     {
                       return const Center(child: Text("Dosyalar okunurken bir hata oluştu."));
                     }
-
+                    // Veriler başarıyla geldiyse grafiği ve kartları oluştur
                     final veriler = snapshot.data!;
+                    int belgeAdedi = veriler['Belgeler']?.length ?? 0;
+                    int gorselAdedi = veriler['Gorseller']?.length ?? 0;
+                    int videoAdedi = veriler['Videolar']?.length ?? 0;
                     
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: GridView.count(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        children: [
-                          KategoriKarti(
-                            baslik: 'Belgeler',
-                            ikon: Icons.description,
-                            renk: Colors.blue,
-                            dosyaSayisi: veriler['Belgeler']?.length ?? 0, 
-                            onClick: () 
-                            {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DosyaListesiEkrani(
-                                    baslik: 'Belgeler',
-                                    dosyalar: veriler['Belgeler'] ?? [],
-                                  ),
+                    return Column
+                    (
+                      children: 
+                      [
+                        const SizedBox(height: 20),
+                        
+                        // Üst Kısım: Pasta Grafiği
+                        DepolamaGrafigi
+                        (
+                          belgeSayisi: belgeAdedi,
+                          gorselSayisi: gorselAdedi,
+                          videoSayisi: videoAdedi,
+                        ),
+                        
+                        const SizedBox(height: 20),
+                        
+                        // Alt Kısım: Kategori Kartları (Expanded ile kalan boşluğu doldurur)
+                        Expanded
+                        (
+                          child: Padding
+                          (
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: GridView.count
+                            (
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              children: 
+                              [
+                                KategoriKarti
+                                (
+                                  baslik: 'Belgeler',
+                                  ikon: Icons.description,
+                                  renk: Colors.blue,
+                                  dosyaSayisi: belgeAdedi, 
+                                  onClick: () 
+                                  {
+                                    Navigator.push
+                                    (
+                                      context,
+                                      MaterialPageRoute
+                                      (
+                                        builder: (context) => DosyaListesiEkrani
+                                        (
+                                          baslik: 'Belgeler',
+                                          dosyalar: veriler['Belgeler'] ?? [],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                          KategoriKarti(
-                            baslik: 'Görseller',
-                            ikon: Icons.image,
-                            renk: Colors.orange,
-                            dosyaSayisi: veriler['Gorseller']?.length ?? 0, 
-                            onClick: () 
-                            {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DosyaListesiEkrani(
-                                    baslik: 'Görseller',
-                                    dosyalar: veriler['Gorseller'] ?? [],
-                                  ),
+                                KategoriKarti
+                                (
+                                  baslik: 'Görseller',
+                                  ikon: Icons.image,
+                                  renk: Colors.orange,
+                                  dosyaSayisi: gorselAdedi, 
+                                  onClick: () 
+                                  {
+                                    Navigator.push
+                                    (
+                                      context,
+                                      MaterialPageRoute
+                                      (
+                                        builder: (context) => DosyaListesiEkrani
+                                        (
+                                          baslik: 'Görseller',
+                                          dosyalar: veriler['Gorseller'] ?? [],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                          KategoriKarti(
-                            baslik: 'Videolar',
-                            ikon: Icons.play_circle_fill,
-                            renk: Colors.red,
-                            dosyaSayisi: veriler['Videolar']?.length ?? 0, 
-                            onClick: () 
-                            {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DosyaListesiEkrani(
-                                    baslik: 'Videolar',
-                                    dosyalar: veriler['Videolar'] ?? [],
-                                  ),
+                                KategoriKarti
+                                (
+                                  baslik: 'Videolar',
+                                  ikon: Icons.play_circle_fill,
+                                  renk: Colors.red,
+                                  dosyaSayisi: videoAdedi, 
+                                  onClick: () 
+                                  {
+                                    Navigator.push
+                                    (
+                                      context,
+                                      MaterialPageRoute
+                                      (
+                                        builder: (context) => DosyaListesiEkrani
+                                        (
+                                          baslik: 'Videolar',
+                                          dosyalar: veriler['Videolar'] ?? [],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   },
                 ),
