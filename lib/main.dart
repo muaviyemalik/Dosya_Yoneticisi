@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-
+import 'screens/dosya_listesi_ekrani.dart';
 import 'widgets/kategori_karti.dart';
 import 'services/file_service.dart';
 import 'services/permission_service.dart';
@@ -116,8 +116,16 @@ class _AnaEkranState extends State<AnaEkran> {
                             renk: Colors.blue,
                             dosyaSayisi: veriler['Belgeler']?.length ?? 0, // Gerçek belge sayısı
                             onClick: () {
-                              print("Belgeler sayfasına gidilecek");
-                            },
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DosyaListesiEkrani(
+                                  baslik: 'Belgeler',
+                                  dosyalar: veriler['Belgeler'] ?? [],
+                                ),
+                              ),
+                            );
+                          },
                           ),
                           KategoriKarti(
                             baslik: 'Görseller',
@@ -125,7 +133,15 @@ class _AnaEkranState extends State<AnaEkran> {
                             renk: Colors.orange,
                             dosyaSayisi: veriler['Gorseller']?.length ?? 0, // Gerçek görsel sayısı
                             onClick: () {
-                              print("Görseller sayfasına gidilecek");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DosyaListesiEkrani(
+                                    baslik: 'Görseller',
+                                    dosyalar: veriler['Gorseller'] ?? [],
+                                  ),
+                                ),
+                              );
                             },
                           ),
                           KategoriKarti(
@@ -134,7 +150,15 @@ class _AnaEkranState extends State<AnaEkran> {
                             renk: Colors.red,
                             dosyaSayisi: veriler['Videolar']?.length ?? 0, // Gerçek video sayısı
                             onClick: () {
-                              print("Videolar sayfasına gidilecek");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DosyaListesiEkrani(
+                                    baslik: 'Videolar',
+                                    dosyalar: veriler['Videolar'] ?? [],
+                                 ),
+                                ),
+                             );
                             },
                           ),
                         ],
