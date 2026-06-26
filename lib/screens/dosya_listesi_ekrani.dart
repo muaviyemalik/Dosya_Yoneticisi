@@ -89,7 +89,7 @@ class DosyaListesiEkrani extends StatelessWidget
                     onTap: () 
                     {
                       // Yazdığımız hibrit motoru çağırıyoruz
-                      FileOpenerService.dosyayiAc(context, dosya.path);
+                      FileOpenerService.dosyayiAc(context, dosya.path, dosyaAdi);
                     },
                   ),
                 );

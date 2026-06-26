@@ -1,51 +1,64 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:open_file/open_file.dart';
 import 'package:flutter/material.dart';
+import '../screens/belge_onizleme_ekrani.dart';
+import '../screens/gorsel_onizleme_ekrani.dart';
 
 class FileOpenerService 
 {
-  // context parametresi ekranda bilgi mesajı (SnackBar) göstermek için gerekli
-  static Future<void> dosyayiAc(BuildContext context, String dosyaYolu) async 
+  // Fonksiyona dosyaAdi parametresini de ekledik
+  static Future<void> dosyayiAc(BuildContext context, String dosyaYolu, String dosyaAdi) async 
   {
-    // İnternet durumunu kontrol ediyoruz
-    final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
-    
-    // Güncel connectivity_plus paketinde liste döner, bağlantı yok mu diye kontrol ediyoruz
-    bool internetYok = connectivityResult.contains(ConnectivityResult.none) || connectivityResult.isEmpty;
+    String uzanti = dosyaAdi.split('.').last.toLowerCase();
 
-    if (internetYok) 
+    // 1. KATEGORİ: GÖRSELLER (Uygulama İçi - İnternet Gerektirmez)
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].contains(uzanti)) 
     {
-      // --- İNTERNET YOK (ÇEVRİMDIŞI MOD) ---
-      ScaffoldMessenger.of(context).showSnackBar
-      (
-        const SnackBar
-        (
-          content: Text('İnternet bağlantısı yok. Yerel uygulamayla açılıyor...'),
-          backgroundColor: Colors.orange,
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GorselOnizlemeEkrani(
+            dosyaYolu: dosyaYolu,
+            dosyaAdi: dosyaAdi,
+          ),
         ),
       );
-      
-      // Dosyayı cihazdaki varsayılan uygulamayla (Word, PDF Okuyucu vb.) aç
-      await OpenFile.open(dosyaYolu);
-      
-    } 
-    else 
-    {
-      // --- İNTERNET VAR (ÇEVRİMİÇİ MOD) ---
-      ScaffoldMessenger.of(context).showSnackBar
-      (
-        const SnackBar
-        (
-          content: Text('İnternet var! Dosya sunucu üzerinden açılacak...'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      
-      // TODO: İleride muaviyecakil.com.tr üzerindeki nano hosting alanına dosyayı yükleyip,
-      // dönen linki Google Docs Viewer ile WebView içinde açacağımız kodlar buraya gelecek.
-      
-      // Çevrimiçi motoru bir sonraki adımda yazana kadar şimdilik dosyayı yerel olarak açalım:
-      await OpenFile.open(dosyaYolu);
+      return; // İşlem bitti, fonksiyondan çık
     }
+
+    // 2. KATEGORİ: BELGELER (İnternet Varsa Uygulama İçi, Yoksa Harici)
+    if (['pdf', 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'txt'].contains(uzanti)) 
+    {
+      final List<ConnectivityResult> baglanti = await (Connectivity().checkConnectivity());
+      bool internetYok = baglanti.contains(ConnectivityResult.none) || baglanti.isEmpty;
+
+      if (internetYok) 
+      {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('İnternet yok. Belge harici uygulamayla açılıyor...'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        await OpenFile.open(dosyaYolu);
+      } 
+      else 
+      {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('İnternet var. Belge sunucuya hazırlanıyor...'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
+        // TODO: Dosyayı muaviyecakil.com.tr sunucusuna yükleme kodları buraya gelecek.
+        // Şimdilik motor tamamlanana kadar yerel olarak açıyoruz:
+        await OpenFile.open(dosyaYolu);
+      }
+      return; // İşlem bitti, fonksiyondan çık
+    }
+
+    // 3. KATEGORİ: VİDEOLAR (Harici Uygulama)
+    await OpenFile.open(dosyaYolu);
   }
 }
