@@ -6,11 +6,13 @@ import 'dart:convert';
 import '../screens/pdf_onizleme_ekrani.dart';
 import '../screens/belge_onizleme_ekrani.dart';
 import '../screens/gorsel_onizleme_ekrani.dart';
+import 'recent_files_service.dart';
 
 class FileOpenerService 
 {
   static Future<void> dosyayiAc(BuildContext context, String dosyaYolu, String dosyaAdi) async 
   {
+    await RecentFilesService.dosyayiEkle(dosyaYolu);
     String uzanti = dosyaAdi.split('.').last.toLowerCase();
 
     // 1. KATEGORİ: GÖRSELLER (Uygulama İçi)

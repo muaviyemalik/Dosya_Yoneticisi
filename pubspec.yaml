@@ -43,6 +43,7 @@ dependencies:
   fl_chart: ^1.2.0
   share_plus: ^13.2.0
   flutter_pdfview: ^1.4.4
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
