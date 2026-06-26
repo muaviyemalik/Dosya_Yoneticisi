@@ -3,7 +3,7 @@ import 'package:open_file/open_file.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import '../screens/pdf_onizleme_ekrani.dart';
 import '../screens/belge_onizleme_ekrani.dart';
 import '../screens/gorsel_onizleme_ekrani.dart';
 
@@ -31,8 +31,14 @@ class FileOpenerService
       return; 
     }
 
+    if (uzanti == 'pdf') 
+    {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PdfOnizlemeEkrani(dosyaYolu: dosyaYolu, dosyaAdi: dosyaAdi)));
+      return;
+    }
+
     // 2. KATEGORİ: BELGELER (İnternet Varsa Sunucuya, Yoksa Harici)
-    if (['pdf', 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'txt'].contains(uzanti)) 
+    if ([ 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'txt'].contains(uzanti)) 
     {
       final List<ConnectivityResult> baglanti = await (Connectivity().checkConnectivity());
       bool internetYok = baglanti.contains(ConnectivityResult.none) || baglanti.isEmpty;
