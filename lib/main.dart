@@ -5,15 +5,18 @@ import 'widgets/kategori_karti.dart';
 import 'services/file_service.dart';
 import 'services/permission_service.dart';
 
-void main() {
+void main() 
+{
   runApp(const DosyaYoneticisiApp());
 }
 
-class DosyaYoneticisiApp extends StatelessWidget {
+class DosyaYoneticisiApp extends StatelessWidget 
+{
   const DosyaYoneticisiApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Dosyalarım',
@@ -26,42 +29,49 @@ class DosyaYoneticisiApp extends StatelessWidget {
   }
 }
 
-// Artık sayfamız dinamik (Stateful) olacak çünkü veriler ve durumlar sürekli değişecek
-class AnaEkran extends StatefulWidget {
+class AnaEkran extends StatefulWidget 
+{
   const AnaEkran({super.key});
 
   @override
   State<AnaEkran> createState() => _AnaEkranState();
 }
 
-class _AnaEkranState extends State<AnaEkran> {
-  // Arka planda çalışacak tarama işlemini tutan değişken
+class _AnaEkranState extends State<AnaEkran> 
+{
   Future<Map<String, List<File>>>? _dosyaTaramasi;
   bool _izinReddedildi = false;
 
   @override
-  void initState() {
+  void initState()
+  {
     super.initState();
-    _izinVeTaramaBaslat(); // Uygulama açılır açılmaz bu fonksiyon tetiklenecek
+    _izinVeTaramaBaslat(); 
   }
 
-  Future<void> _izinVeTaramaBaslat() async {
+  Future<void> _izinVeTaramaBaslat() async 
+  {
     bool izinVerildiMi = await PermissionService.depolamaIzniniIste();
     
-    if (izinVerildiMi) {
-      setState(() {
-        // İzin verildiyse tarama motorunu çalıştır ve Future'a bağla
+    if (izinVerildiMi) 
+    {
+      setState(() 
+      {
         _dosyaTaramasi = FileService.dosyalariTara();
       });
-    } else {
-      setState(() {
-        _izinReddedildi = true; // İzin verilmezse ekranda uyarı göstereceğiz
+    } 
+    else 
+    {
+      setState(() 
+      {
+        _izinReddedildi = true; 
       });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dosyalarım', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -77,12 +87,14 @@ class _AnaEkranState extends State<AnaEkran> {
               ),
             )
           : _dosyaTaramasi == null
-              ? const Center(child: CircularProgressIndicator()) // İzin kontrolü yapılırken dönen çember
-              : FutureBuilder<Map<String, List<File>>>(
+              ? const Center(child: CircularProgressIndicator()) 
+              : FutureBuilder<Map<String, List<File>>>
+              (
                   future: _dosyaTaramasi,
-                  builder: (context, snapshot) {
-                    // Veriler henüz gelmediyse yükleme animasyonu göster
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                  builder: (context, snapshot) 
+                  {
+                    if (snapshot.connectionState == ConnectionState.waiting) 
+                    {
                       return const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -95,12 +107,11 @@ class _AnaEkranState extends State<AnaEkran> {
                       );
                     }
 
-                    // Herhangi bir hata olursa göster
-                    if (snapshot.hasError) {
+                    if (snapshot.hasError) 
+                    {
                       return const Center(child: Text("Dosyalar okunurken bir hata oluştu."));
                     }
 
-                    // Veriler başarıyla geldiyse kartları oluştur
                     final veriler = snapshot.data!;
                     
                     return Padding(
@@ -114,25 +125,27 @@ class _AnaEkranState extends State<AnaEkran> {
                             baslik: 'Belgeler',
                             ikon: Icons.description,
                             renk: Colors.blue,
-                            dosyaSayisi: veriler['Belgeler']?.length ?? 0, // Gerçek belge sayısı
-                            onClick: () {
+                            dosyaSayisi: veriler['Belgeler']?.length ?? 0, 
+                            onClick: () 
+                            {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DosyaListesiEkrani(
-                                  baslik: 'Belgeler',
-                                  dosyalar: veriler['Belgeler'] ?? [],
+                                    baslik: 'Belgeler',
+                                    dosyalar: veriler['Belgeler'] ?? [],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
                           ),
                           KategoriKarti(
                             baslik: 'Görseller',
                             ikon: Icons.image,
                             renk: Colors.orange,
-                            dosyaSayisi: veriler['Gorseller']?.length ?? 0, // Gerçek görsel sayısı
-                            onClick: () {
+                            dosyaSayisi: veriler['Gorseller']?.length ?? 0, 
+                            onClick: () 
+                            {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -148,17 +161,18 @@ class _AnaEkranState extends State<AnaEkran> {
                             baslik: 'Videolar',
                             ikon: Icons.play_circle_fill,
                             renk: Colors.red,
-                            dosyaSayisi: veriler['Videolar']?.length ?? 0, // Gerçek video sayısı
-                            onClick: () {
+                            dosyaSayisi: veriler['Videolar']?.length ?? 0, 
+                            onClick: () 
+                            {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DosyaListesiEkrani(
                                     baslik: 'Videolar',
                                     dosyalar: veriler['Videolar'] ?? [],
-                                 ),
+                                  ),
                                 ),
-                             );
+                              );
                             },
                           ),
                         ],

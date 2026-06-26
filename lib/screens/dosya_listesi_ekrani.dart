@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import '../services/file_opener_service.dart';
 
-class DosyaListesiEkrani extends StatelessWidget {
+class DosyaListesiEkrani extends StatelessWidget 
+{
   final String baslik;
   final List<File> dosyalar;
 
-  const DosyaListesiEkrani({
+  const DosyaListesiEkrani
+  (
+    {
     super.key,
     required this.baslik,
     required this.dosyalar,
-  });
+    }
+  );
 
   // Dosya uzantısına göre dinamik ikon seçen yardımcı fonksiyon
-  Icon _ikonSec(String uzanti) {
-    switch (uzanti) {
+  Icon _ikonSec(String uzanti) 
+  {
+    switch (uzanti)
+    {
       case 'pdf':
         return const Icon(Icons.picture_as_pdf, color: Colors.red, size: 32);
       case 'docx':
@@ -35,22 +42,29 @@ class DosyaListesiEkrani extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+  Widget build(BuildContext context) 
+  {
+    return Scaffold
+    (
+      appBar: AppBar
+      (
         title: Text(baslik, style: const TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
       ),
       body: dosyalar.isEmpty
-          ? const Center(
-              child: Text(
+          ? const Center
+          (
+              child: Text
+              (
                 "Bu kategoride dosya bulunamadı.",
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             )
-          : ListView.builder(
+          : ListView.builder
+          (
               itemCount: dosyalar.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (context, index) 
+              {
                 File dosya = dosyalar[index];
                 
                 // Dosyanın tam yolundan sadece adını çıkarıyoruz
@@ -62,17 +76,20 @@ class DosyaListesiEkrani extends StatelessWidget {
 
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: ListTile(
+                  child: ListTile
+                  (
                     leading: _ikonSec(uzanti),
-                    title: Text(
+                    title: Text
+                    (
                       dosyaAdi,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis, // Uzun isimleri ... ile keser
                     ),
                     subtitle: Text("${boyutMB.toStringAsFixed(2)} MB"),
-                    onTap: () {
-                      print("$dosyaAdi tıklandı!");
-                      // Bir sonraki adımda dosya açma motorumuzu buraya bağlayacağız
+                    onTap: () 
+                    {
+                      // Yazdığımız hibrit motoru çağırıyoruz
+                      FileOpenerService.dosyayiAc(context, dosya.path);
                     },
                   ),
                 );
