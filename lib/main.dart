@@ -130,13 +130,16 @@ class _AnaEkranState extends State<AnaEkran>
                     int gorselAdedi = veriler['Gorseller']?.length ?? 0;
                     int videoAdedi = veriler['Videolar']?.length ?? 0;
                     
-                    return Column
+                    return SingleChildScrollView
                     (
-                      children: 
-                      [
-                        const SizedBox(height: 20),
-                        
-                        if (_sonDosyalar.isNotEmpty)
+                      child: Column
+                      (
+                        children: 
+                        [
+                          const SizedBox(height: 16),
+                          
+                          // 1. SON KULLANILANLAR (Artık sayfayla birlikte kayar)
+                          if (_sonDosyalar.isNotEmpty)
                           Column
                           (
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +148,7 @@ class _AnaEkranState extends State<AnaEkran>
                               const Padding(padding: EdgeInsets.only(left: 16), child: Text("Son Kullanılanlar", style: TextStyle(fontWeight: FontWeight.bold))),
                               SizedBox
                               (
-                                height: 100, // Text için biraz yükseklik artırdık
+                                height: 100,
                                 child: ListView.builder
                                 (
                                   scrollDirection: Axis.horizontal,
@@ -153,7 +156,6 @@ class _AnaEkranState extends State<AnaEkran>
                                   itemBuilder: (context, i) 
                                   {
                                     String dosyaAdi = _sonDosyalar[i].path.split('/').last;
-                                    
                                     return Container
                                     (
                                       width: 80,
@@ -163,19 +165,10 @@ class _AnaEkranState extends State<AnaEkran>
                                         onTap: () => FileOpenerService.dosyayiAc(context, _sonDosyalar[i].path, dosyaAdi),
                                         child: Column
                                         (
-                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: 
                                           [
                                             const Icon(Icons.description, size: 40, color: Colors.blueGrey),
-                                            const SizedBox(height: 4),
-                                            Text
-                                            (
-                                              dosyaAdi,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(fontSize: 10),
-                                            ),
+                                            Text(dosyaAdi, textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10)),
                                           ],
                                         ),
                                       ),
@@ -185,101 +178,50 @@ class _AnaEkranState extends State<AnaEkran>
                               ),
                             ],
                           ),
-                        // Üst Kısım: Pasta Grafiği
-                        DepolamaGrafigi
-                        (
-                          belgeSayisi: belgeAdedi,
-                          gorselSayisi: gorselAdedi,
-                          videoSayisi: videoAdedi,
-                        ),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Alt Kısım: Kategori Kartları (Expanded ile kalan boşluğu doldurur)
-                        Expanded
-                        (
-                          child: Padding
-                          (
 
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: GridView.count
+                          // 2. DEPOLAMA ÇUBUĞU
+                          Padding
+                          (
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 12.0),
+                            child: ClipRRect
                             (
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              children: 
-                              [
-                                KategoriKarti
-                                (
-                                  baslik: 'Belgeler',
-                                  ikon: Icons.description,
-                                  renk: Colors.blue,
-                                  dosyaSayisi: belgeAdedi, 
-                                  onClick: () 
-                                  {
-                                    Navigator.push
-                                    (
-                                      context,
-                                      MaterialPageRoute
-                                      (
-                                        builder: (context) => DosyaListesiEkrani
-                                        (
-                                          baslik: 'Belgeler',
-                                          dosyalar: veriler['Belgeler'] ?? [],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                KategoriKarti
-                                (
-                                  baslik: 'Görseller',
-                                  ikon: Icons.image,
-                                  renk: Colors.orange,
-                                  dosyaSayisi: gorselAdedi, 
-                                  onClick: () 
-                                  {
-                                    Navigator.push
-                                    (
-                                      context,
-                                      MaterialPageRoute
-                                      (
-                                        builder: (context) => DosyaListesiEkrani
-                                        (
-                                          baslik: 'Görseller',
-                                          dosyalar: veriler['Gorseller'] ?? [],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                KategoriKarti
-                                (
-                                  baslik: 'Videolar',
-                                  ikon: Icons.play_circle_fill,
-                                  renk: Colors.red,
-                                  dosyaSayisi: videoAdedi, 
-                                  onClick: () 
-                                  {
-                                    Navigator.push
-                                    (
-                                      context,
-                                      MaterialPageRoute
-                                      (
-                                        builder: (context) => DosyaListesiEkrani
-                                        (
-                                          baslik: 'Videolar',
-                                          dosyalar: veriler['Videolar'] ?? [],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
+                              borderRadius: BorderRadius.circular(4),
+                              child: const LinearProgressIndicator
+                              (
+                                value: 0.56, 
+                                minHeight: 6, // Daha ince bir bar
+                                backgroundColor: Colors.black12, // Arka planı daha şeffaf
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                          
+                          // 3. GRAFİK
+                          DepolamaGrafigi
+                          (
+                            belgeSayisi: belgeAdedi,
+                            gorselSayisi: gorselAdedi,
+                            videoSayisi: videoAdedi,
+                          ),
+                          
+                          // 4. KATEGORİ KARTLARI
+                          GridView.count
+                          (
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(), // Scroll'u dıştaki SingleChildScrollView'a bırakır
+                            crossAxisCount: 2,
+                            padding: const EdgeInsets.all(16),
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            children: 
+                            [
+                              KategoriKarti(baslik: 'Belgeler', ikon: Icons.description, renk: Colors.blue, dosyaSayisi: belgeAdedi, onClick: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DosyaListesiEkrani(baslik: 'Belgeler', dosyalar: veriler['Belgeler'] ?? [])))),
+                              KategoriKarti(baslik: 'Görseller', ikon: Icons.image, renk: Colors.orange, dosyaSayisi: gorselAdedi, onClick: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DosyaListesiEkrani(baslik: 'Görseller', dosyalar: veriler['Gorseller'] ?? [])))),
+                              KategoriKarti(baslik: 'Videolar', ikon: Icons.play_circle_fill, renk: Colors.red, dosyaSayisi: videoAdedi, onClick: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DosyaListesiEkrani(baslik: 'Videolar', dosyalar: veriler['Videolar'] ?? [])))),
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
