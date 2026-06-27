@@ -7,11 +7,13 @@ class DosyaListesiEkrani extends StatefulWidget
 {
   final String baslik;
   final List<File> dosyalar;
+  final String mevcutDizin;
 
   const DosyaListesiEkrani({
     super.key,
     required this.baslik,
     required this.dosyalar,
+    required this.mevcutDizin,
   });
 
   @override
@@ -26,6 +28,42 @@ class _DosyaListesiEkraniState extends State<DosyaListesiEkrani>
   
   bool _aramaModu = false;
   final TextEditingController _aramaController = TextEditingController();
+
+  void _klasorOlustur() 
+{
+  TextEditingController controller = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Yeni Klasör'),
+      content: TextField(
+        controller: controller,
+        autofocus: true,
+        decoration: const InputDecoration(hintText: "Klasör adını girin"),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
+        ElevatedButton(
+          onPressed: () {
+            String klasorAdi = controller.text.trim();
+            if (klasorAdi.isNotEmpty) {
+              try {
+                Directory('${widget.mevcutDizin}/$klasorAdi').createSync();
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Klasör başarıyla oluşturuldu!')));
+                // Not: Burada ekranı yenilemek için sayfayı pop edip tekrar push edebilirsin
+              } catch (e) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Klasör oluşturulamadı!')));
+              }
+            }
+          },
+          child: const Text('Oluştur'),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   void initState() 
@@ -180,6 +218,11 @@ class _DosyaListesiEkraniState extends State<DosyaListesiEkrani>
   {
     return Scaffold
     (
+      floatingActionButton: FloatingActionButton(
+        onPressed: _klasorOlustur,
+        backgroundColor: Colors.blueGrey,
+        child: const Icon(Icons.create_new_folder, color: Colors.white),
+      ),
       appBar: AppBar
       (
         // Arama moduna göre AppBar içeriğini değiştiriyoruz

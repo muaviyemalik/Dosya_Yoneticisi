@@ -215,9 +215,66 @@ class _AnaEkranState extends State<AnaEkran>
                             mainAxisSpacing: 16,
                             children: 
                             [
-                              KategoriKarti(baslik: 'Belgeler', ikon: Icons.description, renk: Colors.blue, dosyaSayisi: belgeAdedi, onClick: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DosyaListesiEkrani(baslik: 'Belgeler', dosyalar: veriler['Belgeler'] ?? [])))),
-                              KategoriKarti(baslik: 'Görseller', ikon: Icons.image, renk: Colors.orange, dosyaSayisi: gorselAdedi, onClick: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DosyaListesiEkrani(baslik: 'Görseller', dosyalar: veriler['Gorseller'] ?? [])))),
-                              KategoriKarti(baslik: 'Videolar', ikon: Icons.play_circle_fill, renk: Colors.red, dosyaSayisi: videoAdedi, onClick: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DosyaListesiEkrani(baslik: 'Videolar', dosyalar: veriler['Videolar'] ?? [])))),
+                              KategoriKarti
+                               (
+                                 baslik: 'Belgeler',
+                                 ikon: Icons.description,
+                                 renk: Colors.blue,
+                                 dosyaSayisi: belgeAdedi,
+                                 onClick: () => Navigator.push
+                                  (
+                                     context,
+                                     MaterialPageRoute
+                                     (
+                                       builder: (context) => DosyaListesiEkrani
+                                        (
+                                          baslik: 'Belgeler',
+                                          dosyalar: veriler['Belgeler'] ?? [],
+                                          mevcutDizin: '/storage/emulated/0/Documents',
+                                        ),
+                                     ),
+                                   ),
+                                ),
+                              KategoriKarti
+                                (
+                                  baslik: 'Görseller',
+                                  ikon: Icons.image,
+                                  renk: Colors.orange,
+                                  dosyaSayisi: gorselAdedi,
+                                  onClick: () => Navigator.push
+                                  ( 
+                                    context,
+                                    MaterialPageRoute
+                                    (
+                                      builder: (context) => DosyaListesiEkrani
+                                      (
+                                        baslik: 'Görseller',
+                                        dosyalar: veriler['Gorseller'] ?? [],
+                                        mevcutDizin: '/storage/emulated/0/Pictures',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              KategoriKarti
+                                (
+                                  baslik: 'Videolar',
+                                  ikon: Icons.play_circle_fill,
+                                  renk: Colors.red,
+                                  dosyaSayisi: videoAdedi,
+                                  onClick: () => Navigator.push
+                                    (
+                                      context,
+                                      MaterialPageRoute
+                                        (
+                                          builder: (context) => DosyaListesiEkrani
+                                            (
+                                              baslik: 'Videolar',
+                                              dosyalar: veriler['Videolar'] ?? [],
+                                              mevcutDizin: '/storage/emulated/0/Movies',
+                                           ),
+                                        ),
+                                   ),
+                                ),
                             ],
                           ),
                         ],
